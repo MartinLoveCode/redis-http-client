@@ -7,7 +7,7 @@ curl --location 'http://localhost:5050/test' \
 }'
 ```
 
--Get key
+- Get key
 ```
 curl --location 'http://localhost:5050/test/hello'
 ```
