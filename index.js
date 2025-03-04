@@ -5,9 +5,9 @@ const {createClient} = require('redis');
 
 async function bootStrap() {
 
-    app.use(express.json());
+    app.use(express.json({limit: '500mb', parameterLimit: 1000000}));
 
-    app.use(express.urlencoded({ extended: true }));
+    app.use(express.urlencoded({ extended: true, limit: '500mb', parameterLimit: 100000000000 }));
 
     const client = createClient({
         username: process.env.REDIS_USER,
@@ -21,15 +21,18 @@ async function bootStrap() {
     client.on('error', err => console.log('Redis Client Error', err));
     
     await client.connect();
+    const mode = process.env.MODE || 'RAM';
+    let ramCache = {};
 
     app.get('/:cluster', async(req, res) => {
         try{
             const {cluster} = req.params;
-            console.log(
-                cluster
-            )
+
+            if(mode === 'RAM'){
+                res.send(ramCache[cluster]);
+            }
+
             const result = await client.hGetAll(cluster);
-    
             res.send(result);
         }catch(error){
             console.log(error);
@@ -41,9 +44,14 @@ async function bootStrap() {
     app.get('/:cluster/:key', async(req, res) => {
         try{
             const {cluster, key} = req.params;
-            console.log(
-                cluster, key
-            )
+            if(mode === 'RAM'){
+                if(!ramCache[cluster]) {
+                    res.send(null);
+                } else {
+                    res.send(ramCache[cluster][key]);
+                }
+                return;
+            }
             const result = await client.hGet(cluster, key);
     
             res.send(result);
@@ -59,7 +67,12 @@ async function bootStrap() {
         try{
             console.log(req.params);
             const {cluster} = req.params;
-            const value = req.body;
+            const {body} = req;
+            if(mode === 'RAM'){
+                ramCache[cluster] = body;
+                res.send('SET!')
+                return;
+            }
             await client.hSet(cluster, value);
             res.send('SET!')
         }catch(error){
@@ -69,7 +82,7 @@ async function bootStrap() {
     })
 
     
-    const port = process.env.PORT;
+    const port = +process.env.PORT;
     app.listen(port, () => {
       console.log(`Example app listening on port ${port}`)
     })

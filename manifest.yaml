@@ -1,0 +1,11 @@
+applications:
+- name: webdis
+  instances: 1
+  memory: 1024MB
+  buildpacks:
+  - nodejs_buildpack
+  command: npm run start
+  env:
+    - MODE: RAM
+
+#redis.cfapps.us10-001.hana.ondemand.com 
