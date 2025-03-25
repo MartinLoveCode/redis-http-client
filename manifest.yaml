@@ -1,11 +1,15 @@
-applications:
-- name: webdis
-  instances: 1
-  memory: 1024MB
-  buildpacks:
-  - nodejs_buildpack
-  command: npm run start
-  env:
-    - MODE: RAM
+# applications:
+# - name: webdis
+#   instances: 1
+#   memory: 1024MB
+#   buildpacks:
+#   - nodejs_buildpack
+#   command: npm run start
 
-#redis.cfapps.us10-001.hana.ondemand.com 
+
+applications:
+- name: redis-stack
+  instances: 1
+  memory: 4096MB
+  docker: 
+    image: 11112003/btp-redis-stack:v1.0.5
