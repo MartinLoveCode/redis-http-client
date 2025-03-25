@@ -11,5 +11,5 @@ applications:
 - name: redis-stack
   instances: 1
   memory: 4096MB
-  docker: 
-    image: 11112003/btp-redis-stack:v1.0.5
+  docker:
+    image: 11112003/btp-redis-stack:v1.0.7

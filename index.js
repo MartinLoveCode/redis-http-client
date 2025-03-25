@@ -65,17 +65,17 @@ async function bootStrap() {
     }
   })
 
-  app.post('command', async (req, res) => {
+  app.post('/command', async (req, res) => {
     try {
-      const { command, paramaters } = req.body;
+      const { command, parameters } = req.body;
       if (!command) throw new Error("Unknown command");
 
       if (mode !== 'REDIS') {
         throw new Error("This api only working on REDIS mode")
       }
 
-      await client[command](...paramaters);
-      res.send(`Run command ${command} successfully!`)
+      const result = await client[command](...parameters);
+      res.send(result)
     } catch (error) {
       res.status(400);
       res.send(error.message)
@@ -91,9 +91,10 @@ async function bootStrap() {
         res.send('SET!')
         return;
       }
-      await client.hSet(cluster, value);
+      await client.hSet(cluster, body);
       res.send('SET!')
     } catch (error) {
+      console.error(error)
       res.status(400);
       res.send(error.message)
     }

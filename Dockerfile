@@ -6,10 +6,9 @@ COPY . .
 RUN npm install
 
 
-RUN apk add --no-cache redis
+RUN apk add --no-cache redis python3 make g++
 
 RUN chmod +x start.sh
-
 
 EXPOSE 8080
 

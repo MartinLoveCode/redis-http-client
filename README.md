@@ -29,7 +29,7 @@ curl --location 'http://localhost:5050/command' \
 --header 'Content-Type: application/json' \
 --data '{
     "command": "HGETALL",
-    "paramaters": [
+    "parameters": [
       'CV_CONSTRUCTION_COST'
     ]
 }'
