@@ -1,15 +1,6 @@
-# applications:
-# - name: webdis
-#   instances: 1
-#   memory: 1024MB
-#   buildpacks:
-#   - nodejs_buildpack
-#   command: npm run start
-
-
 applications:
 - name: redis-stack
   instances: 1
   memory: 4096MB
   docker:
-    image: 11112003/btp-redis-stack:v1.0.7
+    image: 11112003/btp-redis-stack:v1.0.8
