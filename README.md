@@ -22,6 +22,12 @@ curl --location 'http://localhost:5050/test' \
 curl --location 'http://localhost:5050/test/hello'
 ```
 
+- Scan key
+
+```
+curl --location 'http://localhost:5050/hScan/test/hello'
+```
+
 - Run command
 
 ```

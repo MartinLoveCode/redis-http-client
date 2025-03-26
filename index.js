@@ -25,7 +25,13 @@ async function bootStrap() {
 
   if (mode === 'REDIS') {
     await client.connect();
+    console.log("Webdis is started on REDIS mode")
+  } else {
+    console.log("Webdis is started on RAM mode")
   }
+
+
+
 
   app.get('/:cluster', async (req, res) => {
     try {
@@ -37,6 +43,28 @@ async function bootStrap() {
 
       const result = await client.hGetAll(cluster);
       res.send(result);
+    } catch (error) {
+      console.log(error);
+      res.status(400);
+      res.send(error.message)
+    }
+  })
+
+  app.get('/hScan/:cluster/:key', async (req, res) => {
+
+    try {
+      const { cluster, key } = req.params;
+      if (mode !== 'REDIS') {
+        throw new Error("This api only support on Redis mode")
+      }
+
+      let cursor = '0';
+      let results = await client.hScan(cluster, cursor, {
+        MATCH: key,
+        COUNT: 100000000000
+      })
+
+      res.send(results.tuples);
     } catch (error) {
       console.log(error);
       res.status(400);
@@ -81,7 +109,6 @@ async function bootStrap() {
       res.send(error.message)
     }
   })
-
   app.post('/:cluster', async (req, res) => {
     try {
       const { cluster } = req.params;
